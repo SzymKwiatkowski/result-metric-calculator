@@ -40,7 +40,7 @@ def main(args):
 
     vals = list(tp_results.values())[:3]
     nds = (np.mean(np.array([np.clip(1 - value, 0, 1)
-                                    for value in vals])))/(len(vals)*1.0)
+                             for value in vals])))/(len(vals)*1.0)
     print("average precision: {:.4f}".format(ap))
     print("average confidence: {:.4f}".format(ac))
     print("nds: {:.4f}".format(nds))
