@@ -1,9 +1,6 @@
-# Python project template
+# Metrics calculation
 
 ## Config
-Using template files provided and changing data to corresponding data you can use repository.
-
-`train.py` takes one argument of name config which is yaml file which template is placed in templates directory.
 
 ## Using config file
 Copy config file to main directory:
@@ -11,7 +8,7 @@ Copy config file to main directory:
 cp templates/config.yaml.template config.yaml
 ```
 
-Then insert your required credentials
+Then insert required params
 
 ## Pylint
 For linux bash pylint is supported via command:
