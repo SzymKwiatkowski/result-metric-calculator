@@ -1,4 +1,5 @@
 """Rotation wrapping class"""
+import numpy as np
 
 
 class Rotation:
@@ -7,3 +8,6 @@ class Rotation:
         self.y = rotation['qy']
         self.z = rotation['qz']
         self.w = rotation['qw']
+
+    def to_numpy(self):
+        return np.array([self.x, self.y, self.z, self.w])

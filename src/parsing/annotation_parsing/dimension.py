@@ -1,4 +1,5 @@
 """Dimension wrapping class"""
+import numpy as np
 
 
 class Dimension:
@@ -6,3 +7,6 @@ class Dimension:
         self.x = dimension['x']
         self.y = dimension['y']
         self.z = dimension['z']
+
+    def to_numpy(self):
+        return np.array([self.x, self.y, self.z])

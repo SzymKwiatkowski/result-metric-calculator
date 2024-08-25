@@ -15,7 +15,10 @@ def load_config(path: Path) -> dict:
 
 
 def load_json(path: Path) -> dict:
-    # Opening JSON file
+    """
+    :param path: path to json file
+    :rtype: dictionary parsed from json
+    """
     with open(path, 'r', encoding="utf-8") as file:
         data = json.load(file)
 

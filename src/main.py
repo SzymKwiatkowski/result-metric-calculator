@@ -1,4 +1,5 @@
 """Main script"""
+import numpy as np
 import argparse
 from pathlib import Path
 
@@ -7,22 +8,38 @@ from parsing.results_parsing.results_parser import ResultsParser
 from parsing.annotation_parsing.annotation_parser import AnnotationParser
 from matcher import Matcher
 
+from nuscenes.eval.detection.constants import TP_METRICS
+
 
 def main(args):
     """Main executable script"""
     results = load_json(args.result_file)
     annotations = load_json(args.annotations)
     nuscenes_path = Path(args.nuscenes_path)
+    min_precision = 0.1
+    min_recall = 0.1
 
     results_parser = ResultsParser(results, nuscenes_path)
     annotation_parser = AnnotationParser(annotations)
-    frame = annotation_parser.get_samples_frames()[0]
-    detection_result = results_parser.results[list(results_parser.results.keys())[0]]
 
     matcher = Matcher(annotation_parser, results_parser)
-    matcher.run_eval()
+    metrics_collection, precision, conf = matcher.run_eval()
 
-    pass
+    prec = np.copy(precision)
+    prec = prec[round(100 * min_recall) + 1:]  # Clip low recalls. +1 to exclude the min recall bin.
+    prec -= min_precision  # Clip low precision
+    prec[prec < 0] = 0
+    ap = float(np.mean(prec)) / (1.0 - min_precision)
+    ac = float(np.mean(conf))
+
+    tp_results = {}
+
+    for metric_name in TP_METRICS:
+        tp = float(np.mean(np.array([float(np.mean(np.array(metric[metric_name]))) for metric in metrics_collection])))
+        tp_results[metric_name] = tp
+    print("average precision: {:.2f}".format(ap))
+    print("average confidence: {:.2f}".format(ac))
+    print(tp_results)
 
 
 if __name__ == '__main__':
