@@ -5,16 +5,8 @@ from parsing import ResultsParser, AnnotationParser
 from parsing.results_parsing.detection import Detection
 from parsing.annotation_parsing.annotation import Annotation
 
-from utils.math import center_distance, scale_iou, yaw_diff, velocity_l2, attr_acc, cummean
+from utils.math import center_distance, scale_iou, yaw_diff
 from utils.metrics import Metrics
-
-from nuscenes.eval.detection.data_classes import (
-    DetectionBox,
-    DetectionConfig,
-    DetectionMetricDataList,
-    DetectionMetrics,
-    DetectionMetricData,
-)
 
 
 class Matcher:
@@ -33,7 +25,8 @@ class Matcher:
         conf = []  # Accumulator of confidences.
 
         for key, detections_collection in self.results_parser.get_results().items():
-            diff_stamps = frames_stamps.copy() - detections_collection.timestamp
+            diff_stamps = frames_stamps.copy()[frames_stamps < detections_collection.timestamp] \
+                          - detections_collection.timestamp
             frame_idx = diff_stamps.argmin(axis=0)
 
             frame = frames[frame_idx]
@@ -56,6 +49,7 @@ class Matcher:
                 conf.append(detection.detection_score)
                 match_data['trans_err'].append(center_distance(annotation.position.to_numpy(),
                                                                detection.translation.to_numpy()))
+                # REMOVE because it's not provided
                 # match_data['vel_err'].append(velocity_l2(gt_box_match, pred_box))
                 match_data['scale_err'].append(1 - scale_iou(annotation.dimensions.to_numpy(),
                                                              detection.size.to_numpy()))
@@ -66,6 +60,7 @@ class Matcher:
                                                          detection.rotation.to_numpy(),
                                                          period=period))
 
+                # REMOVE because it's not provided
                 # match_data['attr_err'].append(1 - attr_acc(gt_box_match, pred_box))
                 match_data['conf'].append(detection.detection_score)
 
