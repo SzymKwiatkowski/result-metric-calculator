@@ -3,3 +3,5 @@
 pip3 install numpy
 pip3 install pylint
 pip3 install PyYAML
+pip3 install pyquaternin
+pip3 install nuscenes-devkit
