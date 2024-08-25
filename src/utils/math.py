@@ -127,8 +127,7 @@ def cummean(x: np.array) -> np.array:
     if sum(np.isnan(x)) == len(x):
         # Is all numbers in array are NaN's.
         return np.ones(len(x))  # If all errors are NaN set to error to 1 for all operating points.
-    else:
-        # Accumulate in a nan-aware manner.
-        sum_vals = np.nancumsum(x.astype(float))  # Cumulative sum ignoring nans.
-        count_vals = np.cumsum(~np.isnan(x))  # Number of non-nans up to each position.
-        return np.divide(sum_vals, count_vals, out=np.zeros_like(sum_vals), where=count_vals != 0)
+
+    sum_vals = np.nancumsum(x.astype(float))  # Cumulative sum ignoring nans.
+    count_vals = np.cumsum(~np.isnan(x))  # Number of non-nans up to each position.
+    return np.divide(sum_vals, count_vals, out=np.zeros_like(sum_vals), where=count_vals != 0)

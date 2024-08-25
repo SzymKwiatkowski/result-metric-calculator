@@ -9,12 +9,16 @@ from utils.math import center_distance, scale_iou, yaw_diff
 from utils.metrics import Metrics
 
 
+# pylint: disable=R0903, R0914, W0612
 class Matcher:
+    """Class for matching predictions with annotations and evaluation"""
     def __init__(self, annotation_parser: AnnotationParser, results_parser: ResultsParser):
+        """Class constructor"""
         self.annotation_parser = annotation_parser
         self.results_parser = results_parser
 
     def run_eval(self):
+        """Run evaluation for created matcher instance"""
         frames = self.annotation_parser.get_samples_frames()
         frames_stamps = np.array([frame.timestamp for frame in frames], dtype=np.int64)
         metric_data_list = []
@@ -81,10 +85,21 @@ class Matcher:
         return metric_data_list, prec, conf
 
     def _match_annotation(self, annotations: list[Annotation], detection: Detection) -> Annotation:
+        """
+        Match annotations with detections
+        @type detection: Detection
+        @type annotations: list[Annotation]
+        """
         ann = np.array([self._calc_distance(annotation, detection) for annotation in annotations])
 
         return annotations[ann.argmin(axis=0)]
 
     @staticmethod
-    def _calc_distance(annotation, detection):
+    def _calc_distance(annotation: Annotation, detection: Detection) -> float:
+        """
+        Function for calculating distance between detection and annotation
+        @param annotation: Annotation instance
+        @param detection: Detection instance
+        @return:
+        """
         return np.sqrt(np.sum(np.square(annotation.position.to_numpy() - detection.translation.to_numpy())))

@@ -1,16 +1,18 @@
 """Main script"""
-import numpy as np
 import argparse
 from pathlib import Path
+
+import numpy as np
+
+from nuscenes.eval.detection.constants import TP_METRICS
 
 from utils.helpers import load_json
 from parsing.results_parsing.results_parser import ResultsParser
 from parsing.annotation_parsing.annotation_parser import AnnotationParser
 from matcher import Matcher
 
-from nuscenes.eval.detection.constants import TP_METRICS
 
-
+# pylint: disable=R0903, R0914, C0209
 def main(args):
     """Main executable script"""
     results = load_json(args.result_file)
