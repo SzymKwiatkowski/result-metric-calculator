@@ -37,8 +37,13 @@ def main(args):
     for metric_name in TP_METRICS:
         tp = float(np.mean(np.array([float(np.mean(np.array(metric[metric_name]))) for metric in metrics_collection])))
         tp_results[metric_name] = tp
-    print("average precision: {:.2f}".format(ap))
-    print("average confidence: {:.2f}".format(ac))
+
+    vals = list(tp_results.values())[:3]
+    nds = (5*ap + np.mean(np.array([np.clip(1 - value, 0, 1)
+                                    for value in vals])))/8.0
+    print("average precision: {:.4f}".format(ap))
+    print("average confidence: {:.4f}".format(ac))
+    print("nds: {:.4f}".format(nds))
     print(tp_results)
 
 
